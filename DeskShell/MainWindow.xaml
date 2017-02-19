@@ -5,9 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DeskShell"
         mc:Ignorable="d"
-        Title="DeskShell" WindowStyle="None" AllowsTransparency="True" Height="350" Width="525" Background="#01000000">
-
-    <Grid>
-        
+        Title="DeskShell" WindowStyle="None" AllowsTransparency="True" Height="350" Width="525" Background="#33000000">
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="Menu_OpneMedia" Header="Open Media" Click="Menu_OpneMedia_Click"/>
+            <MenuItem x:Name="Menu_CloseMedia" Header="Close Media" Click="Menu_CloseMedia_Click"/>
+            <MenuItem x:Name="Menu_OpenImage" Header="Open Image" Click="Menu_OpenImage_Click"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Blur" Margin="0,0,10,0"/>
+                <Slider Width="120" Minimum="0" Maximum="52" x:Name="Sld_Blur" ValueChanged="Sld_Blur_ValueChanged"/>
+            </StackPanel>
+            <MenuItem x:Name="Menu_Close" Header="Close" Click="Menu_Close_Click"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+    <Grid x:Name="Grid_Background">
+        <Grid.CacheMode>
+            <BitmapCache/>
+        </Grid.CacheMode>
+        <Grid.Effect>
+            <BlurEffect Radius="0" x:Name="blurEffect"/>
+        </Grid.Effect>
+        <Image x:Name="image" Stretch="UniformToFill" VerticalAlignment="Center"/>
+        <MediaElement x:Name="mediaElement" LoadedBehavior="Manual" UnloadedBehavior="Close" Stretch="UniformToFill"/>
     </Grid>
 </Window>

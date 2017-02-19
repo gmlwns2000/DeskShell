@@ -112,6 +112,9 @@ namespace DeskShell.Natives
             ForceMinimize = 11
         }
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetDesktopWindow();
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 

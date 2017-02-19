@@ -116,7 +116,7 @@ namespace DeskShell.Controls
             var actionRow = new Action(() =>
             {
                 gridPanel.RowDefinitions.Clear();
-                for (double i = 0; i < ActualHeight / ItemHeight; i++)
+                for (double i = 0; i < Math.Floor(ActualHeight / ItemHeight); i++)
                 {
                     gridPanel.RowDefinitions.Add(new RowDefinition
                     {
@@ -128,7 +128,7 @@ namespace DeskShell.Controls
             var actionCol = new Action(() =>
             {
                 gridPanel.ColumnDefinitions.Clear();
-                for (double i = 0; i < ActualWidth / ItemWidth; i++)
+                for (double i = 0; i < Math.Floor(ActualWidth / ItemWidth); i++)
                 {
                     gridPanel.ColumnDefinitions.Add(new ColumnDefinition
                     {
@@ -176,9 +176,7 @@ namespace DeskShell.Controls
             Grid.SetRow(element, lastRow);
             Grid.SetColumn(element, lastCol);
 
-            Console.WriteLine($"{lastRow} : {lastCol} : {gridPanel.RowDefinitions.Count}");
-
-            if (lastRow >= gridPanel.RowDefinitions.Count)
+            if (lastRow + 1 >= gridPanel.RowDefinitions.Count)
             {
                 lastRow = 0;
                 lastCol++;
@@ -193,6 +191,7 @@ namespace DeskShell.Controls
         {
             lastRow = 0;
             lastCol = 0;
+
             gridPanel.Children.Clear();
         }
         #endregion

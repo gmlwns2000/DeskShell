@@ -6,7 +6,6 @@
              xmlns:local="clr-namespace:DeskShell.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
-    
     <Grid x:Name="gridPanel">
             
     </Grid>

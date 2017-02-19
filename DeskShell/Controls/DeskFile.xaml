@@ -5,8 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:DeskShell.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-
+             d:DesignHeight="300" d:DesignWidth="300" UseLayoutRounding="True">
     <Border x:Name="border" Padding="10,10,10,5" BorderThickness="1" Focusable="True" AllowDrop="True" VerticalAlignment="Top">
         <Border.Style>
             <Style TargetType="{x:Type Border}">
@@ -24,9 +23,15 @@
                 </Style.Triggers>
             </Style>
         </Border.Style>
-
-        <StackPanel>
-            <Image x:Name="ImageIcon" Grid.Row="0" Margin="10,0,10,5"/>
+        <StackPanel IsHitTestVisible="False">
+            <StackPanel.CacheMode>
+                <BitmapCache SnapsToDevicePixels="True"/>
+            </StackPanel.CacheMode>
+            <Image x:Name="ImageIcon" Grid.Row="0" Margin="10,0,10,5">
+                <Image.Effect>
+                    <DropShadowEffect Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.66"/>
+                </Image.Effect>
+            </Image>
             <TextBlock x:Name="textTitle" Grid.Row="1" MaxHeight="40" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" TextAlignment="Center" Foreground="White">
                 <TextBlock.Effect>
                     <DropShadowEffect ShadowDepth="1" Direction="270"/>
