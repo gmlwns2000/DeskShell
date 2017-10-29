@@ -7,26 +7,6 @@ namespace DeskShell.Natives
 {
     public static class ShellUtility
     {
-        private static IntPtr _shellHandle = IntPtr.Zero;
-        public static IntPtr ShellHandle
-        {
-            get
-            {
-                if(_shellHandle == IntPtr.Zero)
-                {
-                    //try get old shell handle
-                    _shellHandle = GetProgmanShellHandle();
-                    //if failed get new shell handle
-                    if (_shellHandle == null || _shellHandle == IntPtr.Zero)
-                    {
-                        _shellHandle = GetWorkerWShellHandle();
-                    }
-                }
-
-                return _shellHandle;
-            }
-        }
-
         public static void SetShell(Window target)
         {
             if (target.Owner != null)
@@ -43,41 +23,62 @@ namespace DeskShell.Natives
 
         public static void SetDesktop(Window target)
         {
-            IntPtr handle = new WindowInteropHelper(target).EnsureHandle();
-            
-            WinAPI.SetParent(handle, ShellHandle);
+            var handle = new WindowInteropHelper(target).EnsureHandle();
+            var defView = GetDefView();
 
-            WinAPI.SetWindowLong(handle, WinAPI.GWL_EXSTYLE, WinAPI.GetWindowLong(handle, WinAPI.GWL_EXSTYLE) | WinAPI.WS_EX_NOACTIVATE);
+            if (defView != IntPtr.Zero)
+            {
+                var folderView = GetFolderView(defView);
 
-            Screen screen = Screen.PrimaryScreen;
-            target.Top = screen.Bounds.Top;
-            target.Left = screen.Bounds.Left;
-            target.Width = screen.Bounds.Width;
-            target.Height = screen.Bounds.Height;
+                WinAPI.SetParent(handle, defView);
+                //TODO: this is danger
+                //WinAPI.ShowWindow(folderView, WinAPI.ShowWindowCommands.Hide);
+                WinAPI.SetWindowLong(handle, WinAPI.GWL_EXSTYLE, WinAPI.GetWindowLong(handle, WinAPI.GWL_EXSTYLE) | WinAPI.WS_EX_NOACTIVATE);
+
+                target.Top = 0;
+                target.Left = 0;
+                target.Width = SystemParameters.PrimaryScreenWidth;
+                target.Height = SystemParameters.PrimaryScreenHeight;
+            }
         }
 
-        private static IntPtr GetProgmanShellHandle()
+        public static void ShowFolder()
         {
-            IntPtr progman = WinAPI.FindWindow("Progman", null);
-            IntPtr defView = WinAPI.FindWindowEx(progman, IntPtr.Zero, "SHELLDLL_DefView", null);
+            var def = GetDefView();
+            if(def != IntPtr.Zero)
+            {
+                var hwnd = GetFolderView(def);
+                Show(hwnd);
+            }
+        }
+
+        private static void Show(IntPtr hWnd)
+        {
+            WinAPI.ShowWindow(hWnd, WinAPI.ShowWindowCommands.Show);
+        }
+
+        private static IntPtr GetDefView()
+        {
+            IntPtr defView = IntPtr.Zero;
+            WinAPI.EnumWindows(new WinAPI.EnumWindowsProc((tophandle, topparamhandle) =>
+            {
+                var tempView = WinAPI.FindWindowEx(tophandle, IntPtr.Zero, "SHELLDLL_DefView", null);
+
+                if (tempView != IntPtr.Zero)
+                {
+                    defView = tempView;
+                }
+
+                return true;
+            }), IntPtr.Zero);
 
             return defView;
         }
 
-        private static IntPtr GetWorkerWShellHandle()
+        private static IntPtr GetFolderView(IntPtr def)
         {
-            IntPtr hDestop = WinAPI.GetDesktopWindow();
-            IntPtr hWorkerW = IntPtr.Zero;
-            IntPtr hShellViewWin = IntPtr.Zero;
-
-            do
-            {
-                hWorkerW = WinAPI.FindWindowEx(hDestop, hWorkerW, "WorkerW", null);
-                hShellViewWin = WinAPI.FindWindowEx(hWorkerW, IntPtr.Zero, "SHELLDLL_DefView", null);
-            }
-            while (hShellViewWin == IntPtr.Zero && hWorkerW != IntPtr.Zero);
-
-            return hShellViewWin;
+            var folderView = WinAPI.FindWindowEx(def, IntPtr.Zero, "SysListView32", null);
+            return folderView;
         }
 
         public static void SetTranspernt(Window target, bool value)

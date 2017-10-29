@@ -27,6 +27,12 @@ namespace DeskShell
             globalHook.MouseDragFinishedExt += GlobalHook_MouseDragFinishedExt;
 
             Loaded += MainWindow_Loaded;
+            Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            ShellUtility.ShowFolder();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
