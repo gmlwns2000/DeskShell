@@ -1,5 +1,4 @@
 *.suo
-*.dll
 *.sdf
 *.opensdf
 *.ipch
@@ -9,3 +8,4 @@
 */obj
 /Debug
 /packages
+.vs/
